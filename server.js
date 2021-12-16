@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
-import listEndpoints from 'express-list-endpoints'
-import booksData from './data/books.json' 
+
+import foreningsData from './data/foreningar.json'
 
 // Defines the port the app will run on. Defaults to 8080, but can be 
 // overridden when starting the server. For example:
@@ -17,44 +17,25 @@ app.use(express.json())
 // First endpoint 
 // The app.get method takes two arguments - the path and a call back function, which can be used by the frontend.
 app.get('/', (req, res) => {
-  res.send('This is an API with data about books. All endpoints are listed here: https://express-deployment-kim.herokuapp.com/endpoints')
+  res.send('This is an API handling data about foreningar.')
 })
 
-// A list of all endpoints
-app.get('/endpoints', (req, res) => {
-  res.send(listEndpoints(app))
+// Endpoint for all foreningar, with all data (from json file)
+app.get('/foreningar', (req, res) => {
+  res.json(foreningsData)
 })
 
-// Endpoint for all books, with all data (from json file)
-app.get('/books', (req, res) => {
-  res.json(booksData)
-})
-
-// A specific book, using params
-app.get('/books/:id', (req, res) => {
+// A specific forening, using params
+app.get('/foreningar/:id', (req, res) => {
   const { id } = req.params
 
-  const book = booksData.find(item => item.bookID === +id)
+  const forening = foreningsData.find(item => item.id === +id)
 
-  if (!book) {
-    res.status(404).send('No book found with this ID')
+  if (!forening) {
+    res.status(404).send('No forening found')
   } else {
-    res.json(book)
+    res.json(forening)
   }
-})
-
-// Endpoint for all authors, in alpabetical order
-app.get('/books/authors/:authors/', (req, res) => {
-
-  const allAuthors = booksData.map(item => item.authors).sort()
-  res.json(allAuthors)
-})
-
-// Endpoint for all book titles, in alpabetical order
-app.get('/books/title/:title/', (req, res) => {
-
-  const allTitles = booksData.map(item => item.title).sort()
-  res.json(allTitles)
 })
 
 // Start the server
